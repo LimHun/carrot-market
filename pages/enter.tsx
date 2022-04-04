@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import Input from '@components/input';
-import Button from '@components/button';
-import { cls } from '@libs/client/utils';
-import useMutation from '@libs/client/useMutation';
-import { useRouter } from 'next/router';
-import useUser from '@libs/client/useUser';
-import usePost from '@libs/client/usePost';
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import Input from "@components/input";
+import Button from "@components/button";
+import { cls } from "@libs/client/utils";
+import useMutation from "@libs/client/useMutation";
+import { useRouter } from "next/router";
+import useUser from "@libs/client/useUser";
+import usePost from "@libs/client/usePost";
 
 interface EnterForm {
     email?: string;
@@ -22,26 +22,26 @@ interface MutationResult {
 }
 
 export default function Enter() {
-    const [enter, { loading, data, error }] = useMutation<MutationResult>('/api/users/enter');
+    const [enter, { loading, data, error }] = useMutation<MutationResult>("/api/users/enter");
     const [confirmToken, { loading: tokenLoading, data: tokenData }] =
-        useMutation<MutationResult>('/api/users/confirm');
+        useMutation<MutationResult>("/api/users/confirm");
 
-    const [post, { loading: l, data: d, error: e }] = usePost('/api/users/enter');
+    //const [post, { loading: l, data: d, error: e }] = usePost('/api/users/enter');
 
     // 폰번호 or 이메일 입력 시 받는 변수 데이터
     const { register, handleSubmit, reset } = useForm<EnterForm>();
 
     // token 입력시 받는 변수 데이터
     const { register: tokenRegister, handleSubmit: tokenHandleSubmit } = useForm<TokenForm>();
-    const [method, setMethod] = useState<'email' | 'phone'>('email');
+    const [method, setMethod] = useState<"email" | "phone">("email");
 
     const onEmailClick = () => {
         reset();
-        setMethod('email');
+        setMethod("email");
     };
     const onPhoneClick = () => {
         reset();
-        setMethod('phone');
+        setMethod("phone");
     };
     const onValid = (validForm: EnterForm) => {
         if (loading) return;
@@ -53,9 +53,9 @@ export default function Enter() {
     };
     const router = useRouter();
     useEffect(() => {
-        console.log('enter 페이지 진입');
+        console.log("enter 페이지 진입");
         if (tokenData?.ok) {
-            router.push('/');
+            router.push("/");
         }
     }, [tokenData, router]);
     const user = useUser();
@@ -68,7 +68,7 @@ export default function Enter() {
                     // {/* 이메일이나 폰번호로 로그인 시도 후 성공시에 */}
                     <form onSubmit={tokenHandleSubmit(onTokenValid)} className="flex flex-col mt-8">
                         <Input
-                            register={tokenRegister('token', {
+                            register={tokenRegister("token", {
                                 required: true,
                             })}
                             name="token"
@@ -76,7 +76,7 @@ export default function Enter() {
                             type="number"
                             required
                         />
-                        <Button text={tokenLoading ? 'Loading' : 'Confirm Token'} />
+                        <Button text={tokenLoading ? "Loading" : "Confirm Token"} />
                     </form>
                 ) : (
                     // 로그인 전, 이메일 or 폰번호 입력시 UI
@@ -86,10 +86,10 @@ export default function Enter() {
                             <div className="grid border-b w-full mt-9 grid-cols-2">
                                 <button
                                     className={cls(
-                                        'pb-4 font-medium text-sm border-b-2',
-                                        method === 'email'
-                                            ? 'border-organge-500 text-orange-400'
-                                            : 'border-transparent hover:text-gray-400 text-gray-500',
+                                        "pb-4 font-medium text-sm border-b-2",
+                                        method === "email"
+                                            ? "border-organge-500 text-orange-400"
+                                            : "border-transparent hover:text-gray-400 text-gray-500",
                                     )}
                                     onClick={onEmailClick}
                                 >
@@ -97,10 +97,10 @@ export default function Enter() {
                                 </button>
                                 <button
                                     className={cls(
-                                        'pb-4 font-medium text-sm border-b-2',
-                                        method === 'phone'
-                                            ? 'border-organge-500 text-orange-400'
-                                            : 'border-transparent hover:text-gray-400 text-gray-500',
+                                        "pb-4 font-medium text-sm border-b-2",
+                                        method === "phone"
+                                            ? "border-organge-500 text-orange-400"
+                                            : "border-transparent hover:text-gray-400 text-gray-500",
                                     )}
                                     onClick={onPhoneClick}
                                 >
@@ -109,9 +109,9 @@ export default function Enter() {
                             </div>
                         </div>
                         <form onSubmit={handleSubmit(onValid)} className="flex flex-col mt-8 space-y-4">
-                            {method === 'email' ? (
+                            {method === "email" ? (
                                 <Input
-                                    register={register('email', {
+                                    register={register("email", {
                                         required: true,
                                     })}
                                     name="email"
@@ -120,9 +120,9 @@ export default function Enter() {
                                     required
                                 />
                             ) : null}
-                            {method === 'phone' ? (
+                            {method === "phone" ? (
                                 <Input
-                                    register={register('phone')}
+                                    register={register("phone")}
                                     name="phone"
                                     label="phone number"
                                     type="number"
@@ -130,9 +130,9 @@ export default function Enter() {
                                     required
                                 />
                             ) : null}
-                            {method === 'email' ? <Button text={loading ? 'Loading' : 'Get login link'} /> : null}
-                            {method === 'phone' ? (
-                                <Button text={loading ? 'Loading' : 'Get one-time password'} />
+                            {method === "email" ? <Button text={loading ? "Loading" : "Get login link"} /> : null}
+                            {method === "phone" ? (
+                                <Button text={loading ? "Loading" : "Get one-time password"} />
                             ) : null}
                         </form>
                     </>

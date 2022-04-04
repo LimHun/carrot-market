@@ -1,12 +1,12 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import withHandler, { ResponseType } from '@libs/server/withHandler';
-import client from '@libs/server/client';
+import { NextApiRequest, NextApiResponse } from "next";
+import withHandler, { ResponseType } from "@libs/server/withHandler";
+import client from "@libs/server/client";
 
 async function handler(req: NextApiRequest, res: NextApiResponse<ResponseType>) {
     const { phone, email } = req.body;
     const user = phone ? { phone } : email ? { email } : null;
     if (!user) return res.status(400).json({ ok: false });
-    const payload = Math.floor(100000 + Math.random() * 900000) + '';
+    const payload = Math.floor(100000 + Math.random() * 900000) + "";
     // 아래 토큰을 생성하는데 connectOrCreate 를 통해 User를 찾고 없으면 User를 생성하고 만든 토큰을 연결한다.
     const token = await client.token.create({
         data: {
@@ -20,7 +20,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponseType>) 
                         ...user,
                     },
                     create: {
-                        name: 'Anonymous',
+                        name: "Anonymous",
                         ...user,
                     },
                 },
@@ -33,8 +33,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponseType>) 
 
     return res.json({
         ok: true,
-        key: 'value',
+        key: "value",
     });
 }
 
-export default withHandler({ method: 'POST', handler, isPrivate: false });
+export default withHandler({ methods: ["POST"], handler, isPrivate: false });
