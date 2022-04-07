@@ -16,7 +16,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponseType>) 
             body: { name, price, description },
             session: { user },
         } = req;
-        const products = await client.product.create({
+        const product = await client.product.create({
             data: {
                 name,
                 price: +price,
@@ -31,7 +31,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponseType>) 
         });
         res.json({
             ok: true,
-            products,
+            product,
         });
     }
 }

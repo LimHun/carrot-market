@@ -39,6 +39,9 @@ const Upload: NextPage = () => {
     };
     useEffect(() => {
         if (data?.ok) {
+            // 여기 data는
+            // page/api/products/index.ts 파일에 있는
+            // POST방식의 res.json({ok: true, product});이다.
             router.push(`/products/${data.product.id}`);
         }
     }, [data, router]);

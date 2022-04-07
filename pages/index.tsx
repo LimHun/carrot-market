@@ -7,6 +7,7 @@ import Head from "next/head";
 import useSWR from "swr";
 import { Product } from "@prisma/client";
 
+// SWR을 통해서 API 데이터를 받는 형태를 알고 이를 가지고 가공할 수 있다.
 interface ProductsResponse {
     ok: boolean;
     products: Product[];
