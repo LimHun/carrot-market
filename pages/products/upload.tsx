@@ -23,7 +23,6 @@ interface UploadProductMutation {
 const Upload: NextPage = () => {
     // 다른 페이지로 라우팅하기 위한 변수
     const router = useRouter();
-
     // react-hook-form 을이용한 데이터 전달 및 함수 호출
     // onValid 함수를 handleSubmit 통해 호출 이라고하면 알아 듣기 힘들고
     // form에서 submit 하면 handleSubmit 이 가리키고 있는 onValid 함수 호출

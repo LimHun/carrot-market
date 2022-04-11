@@ -1,7 +1,16 @@
 import type { NextPage } from "next";
 import Layout from "@components/layout";
+import { useRouter } from "next/router";
+import useSWR from "swr";
+import Link from "next/link";
 
 const ItemDetail: NextPage = () => {
+    const router = useRouter();
+    console.log(router.query);
+
+    // 처음엔 router가 마운트 중이기때문에 router.query.id 에 값이 없을 수 있다.
+    // 때문에 undefind 체크를 한뒤 api를 요청한다.
+    const { data, error } = useSWR(router.query.id ? `/api/products/${router.query.id}` : null);
     return (
         <Layout title="상세보기" canGoBack>
             <div className="px-4 py-10">
@@ -10,21 +19,20 @@ const ItemDetail: NextPage = () => {
                     <div className="flex py-3 border-t border-b items-center space-x-3">
                         <div className="w-12 h-12 bg-gray-300 rounded-full border-b items-center" />
                         <div>
-                            <p className="text-sm font-medium text-gray-700">Staeve Jebs</p>
-                            <p className="text-sm font-medium text-gray-500">View profile &rarr;</p>
+                            <p className="text-sm font-medium text-gray-700">
+                                {data ? data?.product?.user?.name : "닉네임"}
+                            </p>
+                            <Link href={`/users/profiles/${data?.products?.user?.id}`}>
+                                <a className="text-xs fint-medium text-gray-500">View profile &rarr;</a>
+                            </Link>
                         </div>
                     </div>
                     <div className="mt-5">
-                        <h1 className="text-3xl font-bold texst-gray-900">Galaxy S50</h1>
-                        <span className="text-3xl mt-3 block text-gray-900">$140</span>
-                        <p className="my-6 text-gray-700">
-                            My money&apos;s in that office, right? If she start giving me some bullshit about it
-                            ain&apos;t there, and we got to go someplace else and get it, I&apos;m gonna shoot you in
-                            the head then and there. Then I&apos;m gonna shoot that bitch in the kneecaps, find out
-                            where my goddamn money is. She gonna tell me too. Hey, look at me when I&apos;m talking to
-                            you, motherfucker. You listen: we go in there, and that ni**a Winston or anybody else is in
-                            there, you the first motherfucker to get shot. You understand?
-                        </p>
+                        <h1 className="text-3xl font-bold texst-gray-900">{data ? data?.product?.name : "제품명"}</h1>
+                        <span className="text-3xl mt-3 block text-gray-900">
+                            ${data ? data?.product?.price : " - "}
+                        </span>
+                        <p className="my-6 text-gray-700">{data ? data?.product?.description : "설명"}</p>
                         <div className="flex items-center justify-between space-x-2 ap">
                             <button className="flex-1 bg-orange-500 text-white py-3 rounded-md focus:outline-none focus:ring-offset-2 font-medium hover:bg-orange-600 focus:ring-orange-500">
                                 Talk to seller
