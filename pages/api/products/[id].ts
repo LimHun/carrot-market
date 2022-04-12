@@ -21,11 +21,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponseType>) 
     });
     console.log(product);
 
-    const terms = product?.name.split(" ").map((word) => {
+    const terms = product?.name.split(" ").map((word) => ({
         name: {
-            contains: word;
-        }
-    });
+            contains: word,
+        },
+    }));
     const relatedProducts = await client.product.findMany({
         where: {
             OR: terms,

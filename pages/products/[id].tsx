@@ -3,6 +3,17 @@ import Layout from "@components/layout";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import Link from "next/link";
+import { Product, User } from "@prisma/client";
+
+interface ProductWithUser extends Product {
+    user: User;
+}
+
+interface ItemDetailResponse {
+    ok: boolean;
+    product: ProductWithUser;
+    relatedProducts: Product[];
+}
 
 const ItemDetail: NextPage = () => {
     const router = useRouter();
@@ -10,7 +21,8 @@ const ItemDetail: NextPage = () => {
 
     // 처음엔 router가 마운트 중이기때문에 router.query.id 에 값이 없을 수 있다.
     // 때문에 undefind 체크를 한뒤 api를 요청한다.
-    const { data, error } = useSWR(router.query.id ? `/api/products/${router.query.id}` : null);
+    const { data, error } = useSWR<ItemDetailResponse>(router.query.id ? `/api/products/${router.query.id}` : null);
+
     return (
         <Layout title="상세보기" canGoBack>
             <div className="px-4 py-10">
@@ -22,7 +34,7 @@ const ItemDetail: NextPage = () => {
                             <p className="text-sm font-medium text-gray-700">
                                 {data ? data?.product?.user?.name : "닉네임"}
                             </p>
-                            <Link href={`/users/profiles/${data?.products?.user?.id}`}>
+                            <Link href={`/users/profiles/${data?.product?.user?.id}`}>
                                 <a className="text-xs fint-medium text-gray-500">View profile &rarr;</a>
                             </Link>
                         </div>
@@ -60,11 +72,11 @@ const ItemDetail: NextPage = () => {
                 <div>
                     <h2 className="text-2xl font-bold text-gray-900">Similar items</h2>
                     <div className="grid grid-cols-2 gap-4">
-                        {[1, 2, 3, 4, 5, 6].map((_, i) => (
-                            <div key={i}>
+                        {data?.relatedProducts.map((product) => (
+                            <div key={product.id}>
                                 <div className="h-56 w-full mb-4 bg-slate-300 rounded-md" />
-                                <h3 className="text-sm text-gray-700 -mb-1">Galaxy S60</h3>
-                                <span className="text-sm font-medium">$6</span>
+                                <h3 className="text-sm text-gray-700 -mb-1">{product.name}</h3>
+                                <span className="text-sm font-medium">${product.price}</span>
                             </div>
                         ))}
                     </div>
