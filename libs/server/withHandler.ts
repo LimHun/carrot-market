@@ -24,7 +24,6 @@ export default function withHandler({ methods, isPrivate = true, handler }: Conf
         try {
             await handler(req, res);
         } catch (error) {
-            console.log(error);
             return res.status(500).json({ error });
         }
     };

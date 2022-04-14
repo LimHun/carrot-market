@@ -27,10 +27,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponseType>) 
             },
         },
     });
-
-    console.log(user);
-    console.log(token);
-
     return res.json({
         ok: true,
         key: "value",

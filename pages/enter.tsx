@@ -53,13 +53,11 @@ export default function Enter() {
     };
     const router = useRouter();
     useEffect(() => {
-        console.log("enter 페이지 진입");
         if (tokenData?.ok) {
             router.push("/");
         }
     }, [tokenData, router]);
     const user = useUser();
-    console.log(user);
     return (
         <div className="mt-16 px-4">
             <h3 className="text-3xl font-bold text-center">Enter to Carrot</h3>

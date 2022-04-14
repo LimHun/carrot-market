@@ -5,7 +5,6 @@ import { withApiSession } from "@libs/server/withSession";
 
 async function handler(req: NextApiRequest, res: NextApiResponse<ResponseType>) {
     const { token } = req.body;
-    console.log(token);
     const foundToken = await client.token.findUnique({
         where: {
             payload: token,

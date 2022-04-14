@@ -32,7 +32,6 @@ const Upload: NextPage = () => {
     // 여기서 data는 form을 통해 입력 받은 데이터임 UploadProductForm 형태
     const [uploadProduct, { loading, data }] = useMutation<UploadProductMutation>("/api/products");
     const onValid = (data: UploadProductForm) => {
-        console.log(data);
         if (loading) return;
         uploadProduct(data);
     };
