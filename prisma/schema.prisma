@@ -13,19 +13,19 @@ datasource db {
 }
 
 model User {
-    id        Int         @id @default(autoincrement())
-    phone     String?     @unique
-    email     String?     @unique
-    name      String
-    avatar    String?
-    createdAt DateTime    @default(now())
-    updatedAt DateTime    @updatedAt
-    Token     Token[]
-    product   Product[]
-    favs      Fav[]
-    Post      Post[]
-    Answer    Answer[]
-    Wondering Wondering[]
+    id         Int         @id @default(autoincrement())
+    phone      String?     @unique
+    email      String?     @unique
+    name       String
+    avatar     String?
+    createdAt  DateTime    @default(now())
+    updatedAt  DateTime    @updatedAt
+    Token      Token[]
+    product    Product[]
+    fav        Fav[]
+    posts      Post[]
+    answers    Answer[]
+    wonderings Wondering[]
 }
 
 model Token {
@@ -67,8 +67,8 @@ model Post {
     user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId    Int
     question  String      @db.MediumText
-    Answer    Answer[]
-    Wondering Wondering[]
+    answers   Answer[]
+    wondering Wondering[]
 }
 
 model Answer {
