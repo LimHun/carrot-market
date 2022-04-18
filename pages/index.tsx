@@ -7,10 +7,15 @@ import Head from "next/head";
 import useSWR from "swr";
 import { Product } from "@prisma/client";
 
+interface ProductWithCount extends Product {
+    _count: {
+        favs: number;
+    };
+}
 // SWR을 통해서 API 데이터를 받는 형태를 알고 이를 가지고 가공할 수 있다.
 interface ProductsResponse {
     ok: boolean;
-    products: Product[];
+    products: ProductWithCount[];
 }
 
 const Home: NextPage = () => {
@@ -29,7 +34,7 @@ const Home: NextPage = () => {
                         title={product.name}
                         price={product.price}
                         comments={1}
-                        hearts={1}
+                        hearts={product._count.favs}
                     />
                 ))}
                 <FloatingButton href="/products/upload">
