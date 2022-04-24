@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import TextArea from "@components/textarea";
 import { useEffect } from "react";
+import useCoords from "@libs/client/useCoords";
 
 interface PostWrite {
     question: string;
@@ -17,18 +18,20 @@ interface PostResponse {
 }
 
 const Write: NextPage = () => {
+    // 위치 정보 가져오기
+    const { latitude, longitude } = useCoords();
     const [post, { loading, data }] = useMutation<PostResponse>("/api/posts");
     const router = useRouter();
 
     const { register, handleSubmit } = useForm<PostWrite>();
     const onVelid = (data: PostWrite) => {
         if (loading) return;
-        post(data);
+        post({ ...data, latitude, longitude });
     };
 
     useEffect(() => {
         if (data && data.ok) {
-            router.push(`/communtiy/${data.post.id}`);
+            router.replace(`/communtiy/${data.post.id}`);
         }
     });
 

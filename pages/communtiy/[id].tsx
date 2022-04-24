@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 import Link from "next/link";
 import { cls } from "@libs/client/utils";
+import { useEffect } from "react";
 
 interface AnswerWithUser extends Answer {
     user: User;
@@ -28,13 +29,13 @@ interface CommuntiyPostResponse {
     isWondering: boolean; // 유저의 동의 여부 확인 변수
 }
 
-interface AnswerWrite {
+interface AnswerForm {
     answer: string;
 }
 
 interface AnswerResponse {
     ok: boolean;
-    answers: Answer[];
+    response: Answer;
 }
 
 const CommunityPostDetail: NextPage = () => {
@@ -42,7 +43,10 @@ const CommunityPostDetail: NextPage = () => {
     const { data, mutate } = useSWR<CommuntiyPostResponse>(router.query.id ? `/api/posts/${router.query.id}` : null);
     console.log(data); // 이 로그는 크롬 검사 를 통해 확인한다. 위처럼 쓰면 나오질 않는다.
 
-    const [wonder] = useMutation(`/api/posts/${router.query.id}/wonder`);
+    const [wonder, { loading }] = useMutation(`/api/posts/${router.query.id}/wonder`);
+    const [sendAnswer, { data: answerData, loading: answerLoading }] = useMutation<AnswerResponse>(
+        `/api/posts/${router.query.id}/answers`,
+    );
     const onWonderClick = () => {
         if (!data) return;
         mutate(
@@ -59,15 +63,23 @@ const CommunityPostDetail: NextPage = () => {
             },
             false,
         );
+        if (!loading) return;
         wonder({});
     };
 
-    const { register, handleSubmit } = useForm<AnswerWrite>();
-    const [answers, { loading }] = useMutation<AnswerResponse>(`/api/post/answer`);
-    const onVelid = (data: AnswerWrite) => {
-        if (loading) return;
-        console.log(answers);
+    // reset은 form을 처음으로 초기화 할수있는 함수다.
+    const { register, handleSubmit, reset } = useForm<AnswerForm>();
+    const onVelid = (form: AnswerForm) => {
+        if (answerLoading) return;
+        sendAnswer(form);
     };
+    useEffect(() => {
+        // answerDatat가 갱신이 되면 form 을 초기화 한다.
+        if (answerData && answerData.ok) {
+            reset();
+            mutate();
+        }
+    }, [answerData, reset, mutate]);
 
     return (
         <Layout title="동네질문 상세보기" canGoBack>
@@ -133,10 +145,11 @@ const CommunityPostDetail: NextPage = () => {
                     <div className="px-4 my-5 space-y-5">
                         {data?.post?.answers?.map((answer) => (
                             <div key={answer.id} className="flex items-start space-x-3">
-                                <div className="text-sm block font-medium text-gray-700">
+                                <div className="w-8 h-8 bg-slate-200 rounded-full" />
+                                <div>
                                     <span className="text-sm block font-medium text-gray-700">{answer.user.name}</span>
-                                    <span className="text-xs text-gray-500 block">{answer.createdAt}</span>
-                                    <p className="text-gray-700 mt-2">{answer.answer}</p>
+                                    <span className="text-xs text-gray-500 block ">{answer.createdAt}</span>
+                                    <p className="text-gray-700 mt-2">{answer.answer} </p>
                                 </div>
                             </div>
                         ))}
@@ -150,7 +163,7 @@ const CommunityPostDetail: NextPage = () => {
                         required
                     />
                     <button className="mt-2 w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 focus:outline-none">
-                        Reply
+                        {answerLoading ? "Loading..." : "Reply"}
                     </button>
                 </form>
             </div>
